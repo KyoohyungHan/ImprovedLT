@@ -3,6 +3,7 @@ The original HEAAN is in https://github.com/snucrypto/HEAAN. This code is for th
 
 ## Dependency
 This library is written by c++ and using NTL library (http://www.shoup.net/ntl/).
+We also used Eigen library for sparse matrix operations.
 
 ## How to run this code?
 First, you need to build HEAAN library in HEAAN/lib folder by the command "make all".
