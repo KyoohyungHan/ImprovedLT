@@ -23,11 +23,11 @@ void Scheme::addEncKey(SecretKey& secretKey) {
 
 	ring.sampleUniform2(ax, ring.logQQ);
 	ring.sampleGauss(ex);
-	long np = ceil((1 + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((1 + ring.logQQ + ring.logN + 2)/49.0);
 	ring.mult(bx, secretKey.sx, ax, np, ring.QQ);
 	ring.sub(bx, ex, bx, ring.QQ);
 
-	np = ceil((2 * ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((2 * ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rax = ring.toNTT(ax, np);
 	uint64_t* rbx = ring.toNTT(bx, np);
 
@@ -52,18 +52,18 @@ void Scheme::addMultKey(SecretKey& secretKey) {
 	ZZ* bx = new ZZ[ring.N];
 	ZZ* sxsx = new ZZ[ring.N];
 
-	long np = ceil((2 + ring.logN + 2)/59.0);
+	long np = ceil((2 + ring.logN + 2)/49.0);
 	ring.mult(sxsx, secretKey.sx, secretKey.sx, np, ring.Q);
 	ring.leftShiftAndEqual(sxsx, ring.logQ, ring.QQ);
 	ring.sampleUniform2(ax, ring.logQQ);
 	ring.sampleGauss(ex);
 	ring.addAndEqual(ex, sxsx, ring.QQ);
 
-	np = ceil((1 + ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((1 + ring.logQQ + ring.logN + 2)/49.0);
 	ring.mult(bx, secretKey.sx, ax, np, ring.QQ);
 	ring.sub(bx, ex, bx, ring.QQ);
 
-	np = ceil((2 * ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((2 * ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rax = ring.toNTT(ax, np);
 	uint64_t* rbx = ring.toNTT(bx, np);
 
@@ -95,11 +95,11 @@ void Scheme::addConjKey(SecretKey& secretKey) {
 	ring.sampleGauss(ex);
 	ring.addAndEqual(ex, sxconj, ring.QQ);
 
-	long np = ceil((1 + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((1 + ring.logQQ + ring.logN + 2)/49.0);
 	ring.mult(bx, secretKey.sx, ax, np, ring.QQ);
 	ring.sub(bx, ex, bx, ring.QQ);
 
-	np = ceil((2 * ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((2 * ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rax = ring.toNTT(ax, np);
 	uint64_t* rbx = ring.toNTT(bx, np);
 
@@ -131,11 +131,11 @@ void Scheme::addLeftRotKey(SecretKey& secretKey, long r) {
 	ring.sampleGauss(ex);
 	ring.addAndEqual(ex, spow, ring.QQ);
 
-	long np = ceil((1 + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((1 + ring.logQQ + ring.logN + 2)/49.0);
 	ring.mult(bx, secretKey.sx, ax, np, ring.QQ);
 	ring.sub(bx, ex, bx, ring.QQ);
 
-	np = ceil((2 * ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((2 * ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rax = ring.toNTT(ax, np);
 	uint64_t* rbx = ring.toNTT(bx, np);
 
@@ -275,7 +275,7 @@ Ciphertext Scheme::encryptMsg(Plaintext& msg) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(ENCRYPTION)) : keyMap.at(ENCRYPTION);
 
-	long np = ceil((1 + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((1 + ring.logQQ + ring.logN + 2)/49.0);
 	ring.multNTT(ax, vx, key->rax, np, qQ);
 	ring.sampleGauss(ex);
 	ring.addAndEqual(ax, ex, qQ);
@@ -300,7 +300,7 @@ Plaintext Scheme::decryptMsg(SecretKey& secretKey, Ciphertext& cipher) {
 	ZZ q = ring.qpows[cipher.logq];
 	ZZ* mx = new ZZ[ring.N];
 
-	long np = ceil((1 + cipher.logq + ring.logN + 2)/59.0);
+	long np = ceil((1 + cipher.logq + ring.logN + 2)/49.0);
 	ring.mult(mx, cipher.ax, secretKey.sx, np, q);
 	ring.addAndEqual(mx, cipher.bx, q);
 	return Plaintext(mx, cipher.logp, cipher.logq, cipher.N, cipher.n);
@@ -490,7 +490,7 @@ Ciphertext Scheme::mult(Ciphertext& cipher1, Ciphertext& cipher2) {
 	ZZ q = ring.qpows[cipher1.logq];
 	ZZ qQ = ring.qpows[cipher1.logq + ring.logQ];
 
-	long np = ceil((2 + cipher1.logq + cipher2.logq + ring.logN + 2)/59.0);
+	long np = ceil((2 + cipher1.logq + cipher2.logq + ring.logN + 2)/49.0);
 
 	uint64_t* ra1 = ring.toNTT(cipher1.ax, np);
 	uint64_t* rb1 = ring.toNTT(cipher1.bx, np);
@@ -512,7 +512,7 @@ Ciphertext Scheme::mult(Ciphertext& cipher1, Ciphertext& cipher2) {
 	ZZ* axmult = new ZZ[ring.N];
 	ZZ* bxmult = new ZZ[ring.N];
 
-	np = ceil((cipher1.logq + ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((cipher1.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* raa = ring.toNTT(axax, np);
 	ring.multDNTT(axmult, raa, key->rax, np, qQ);
 	ring.multDNTT(bxmult, raa, key->rbx, np, qQ);
@@ -543,7 +543,7 @@ void Scheme::multAndEqual(Ciphertext& cipher1, Ciphertext& cipher2) {
 	ZZ q = ring.qpows[cipher1.logq];
 	ZZ qQ = ring.qpows[cipher1.logq + ring.logQ];
 
-	long np = ceil((2 + cipher1.logq + cipher2.logq + ring.logN + 2)/59.0);
+	long np = ceil((2 + cipher1.logq + cipher2.logq + ring.logN + 2)/49.0);
 
 	uint64_t* ra1 = ring.toNTT(cipher1.ax, np);
 	uint64_t* rb1 = ring.toNTT(cipher1.bx, np);
@@ -562,7 +562,7 @@ void Scheme::multAndEqual(Ciphertext& cipher1, Ciphertext& cipher2) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(MULTIPLICATION)) : keyMap.at(MULTIPLICATION);
 
-	np = ceil((cipher1.logq + ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((cipher1.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* raa = ring.toNTT(axax, np);
 	ring.multDNTT(cipher1.ax, raa, key->rax, np, qQ);
 	ring.multDNTT(cipher1.bx, raa, key->rbx, np, qQ);
@@ -595,7 +595,7 @@ Ciphertext Scheme::square(Ciphertext& cipher) {
 	ZZ q = ring.qpows[cipher.logq];
 	ZZ qQ = ring.qpows[cipher.logq + ring.logQ];
 
-	long np = ceil((2 * cipher.logq + ring.logN + 2)/59.0);
+	long np = ceil((2 * cipher.logq + ring.logN + 2)/49.0);
 
 	uint64_t* ra = ring.toNTT(cipher.ax, np);
 	uint64_t* rb = ring.toNTT(cipher.bx, np);
@@ -614,7 +614,7 @@ Ciphertext Scheme::square(Ciphertext& cipher) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(MULTIPLICATION)) : keyMap.at(MULTIPLICATION);
 
-	np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* raa = ring.toNTT(axax, np);
 	ring.multDNTT(axmult, raa, key->rax, np, qQ);
 	ring.multDNTT(bxmult, raa, key->rbx, np, qQ);
@@ -642,7 +642,7 @@ void Scheme::squareAndEqual(Ciphertext& cipher) {
 	ZZ q = ring.qpows[cipher.logq];
 	ZZ qQ = ring.qpows[cipher.logq + ring.logQ];
 
-	long np = ceil((2 + 2 * cipher.logq + ring.logN + 2)/59.0);
+	long np = ceil((2 + 2 * cipher.logq + ring.logN + 2)/49.0);
 
 	uint64_t* ra = ring.toNTT(cipher.ax, np);
 	uint64_t* rb = ring.toNTT(cipher.bx, np);
@@ -662,7 +662,7 @@ void Scheme::squareAndEqual(Ciphertext& cipher) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(MULTIPLICATION)) : keyMap.at(MULTIPLICATION);
 
-	np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 
 	uint64_t* raa = ring.toNTT(axax, np);
 	ring.multDNTT(cipher.ax, raa, key->rax, np, qQ);
@@ -753,7 +753,7 @@ Ciphertext Scheme::multByPoly(Ciphertext& cipher, ZZ* poly, long logp) {
 	ZZ* bx = new ZZ[ring.N];
 
 	long bnd = ring.maxBits(poly, ring.N);
-	long np = ceil((cipher.logq + bnd + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + bnd + ring.logN + 2)/49.0);
 	uint64_t* rpoly = ring.toNTT(poly, np);
 	ring.multNTT(ax, cipher.ax, rpoly, np, q);
 	ring.multNTT(bx, cipher.bx, rpoly, np, q);
@@ -766,7 +766,7 @@ Ciphertext Scheme::multByPolyNTT(Ciphertext& cipher, uint64_t* rpoly, long bnd, 
 	ZZ* ax = new ZZ[ring.N];
 	ZZ* bx = new ZZ[ring.N];
 
-	long np = ceil((cipher.logq + bnd + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + bnd + ring.logN + 2)/49.0);
 	ring.multNTT(ax, cipher.ax, rpoly, np, q);
 	ring.multNTT(bx, cipher.bx, rpoly, np, q);
 
@@ -778,7 +778,7 @@ void Scheme::multByPolyAndEqual(Ciphertext& cipher, ZZ* poly, long logp) {
 	ZZ q = ring.qpows[cipher.logq];
 
 	long bnd = ring.maxBits(poly, ring.N);
-	long np = ceil((cipher.logq + bnd + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + bnd + ring.logN + 2)/49.0);
 	uint64_t* rpoly = ring.toNTT(poly, np);
 	ring.multNTTAndEqual(cipher.ax, rpoly, np, q);
 	ring.multNTTAndEqual(cipher.bx, rpoly, np, q);
@@ -790,7 +790,7 @@ void Scheme::multByPolyAndEqual(Ciphertext& cipher, ZZ* poly, long logp) {
 void Scheme::multByPolyNTTAndEqual(Ciphertext& cipher, uint64_t* rpoly, long bnd, long logp) {
 	ZZ q = ring.qpows[cipher.logq];
 
-	long np = ceil((cipher.logq + bnd + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + bnd + ring.logN + 2)/49.0);
 	ring.multNTTAndEqual(cipher.ax, rpoly, np, q);
 	ring.multNTTAndEqual(cipher.bx, rpoly, np, q);
 
@@ -952,7 +952,7 @@ Ciphertext Scheme::leftRotateFast(Ciphertext& cipher, long r) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serLeftRotKeyMap.at(r)) : leftRotKeyMap.at(r);
 
-	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rarot = ring.toNTT(axrot, np);
 	ring.multDNTT(ax, rarot, key->rax, np, qQ);
 	ring.multDNTT(bx, rarot, key->rbx, np, qQ);
@@ -981,7 +981,7 @@ void Scheme::leftRotateFastAndEqual(Ciphertext& cipher, long r) {
 	ring.leftRotate(bxrot, cipher.bx, r);
 	ring.leftRotate(axrot, cipher.ax, r);
 	Key* key = isSerialized ? SerializationUtils::readKey(serLeftRotKeyMap.at(r)) : leftRotKeyMap.at(r);
-	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* rarot = ring.toNTT(axrot, np);
 	ring.multDNTT(cipher.ax, rarot, key->rax, np, qQ);
 	ring.multDNTT(cipher.bx, rarot, key->rbx, np, qQ);
@@ -1055,7 +1055,7 @@ Ciphertext Scheme::conjugate(Ciphertext& cipher) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(CONJUGATION)) : keyMap.at(CONJUGATION);
 
-	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* raconj = ring.toNTT(axconj, np);
 	ring.multDNTT(ax, raconj, key->rax, np, qQ);
 	ring.multDNTT(bx, raconj, key->rbx, np, qQ);
@@ -1086,7 +1086,7 @@ void Scheme::conjugateAndEqual(Ciphertext& cipher) {
 
 	Key* key = isSerialized ? SerializationUtils::readKey(serKeyMap.at(CONJUGATION)) : keyMap.at(CONJUGATION);
 
-	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/59.0);
+	long np = ceil((cipher.logq + ring.logQQ + ring.logN + 2)/49.0);
 	uint64_t* raconj = ring.toNTT(axconj, np);
 	ring.multDNTT(cipher.ax, raconj, key->rax, np, qQ);
 	ring.multDNTT(cipher.bx, raconj, key->rbx, np, qQ);

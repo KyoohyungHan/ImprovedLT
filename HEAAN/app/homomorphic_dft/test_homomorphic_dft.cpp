@@ -7,10 +7,11 @@ struct Parameter
 	long log2n; long radix;
 };
 
-Parameter homomorphic_dft_test_param1 = {14, 125, 30, 25, 12, 16};
-Parameter homomorphic_dft_test_param2 = {14, 150, 30, 25, 12, 8};
-Parameter homomorphic_dft_test_param3 = {14, 210, 30, 25, 12, 4};
-Parameter homomorphic_dft_test_param4 = {15, 350, 30, 25, 12, 2};
+// Parameters in the Paper
+Parameter homomorphic_dft_test_param1 = {15, 440, 30, 30, 12, 16};
+Parameter homomorphic_dft_test_param2 = {15, 440, 30, 30, 12, 8};
+Parameter homomorphic_dft_test_param3 = {15, 440, 30, 30, 12, 4};
+Parameter homomorphic_dft_test_param4 = {15, 440, 30, 30, 12, 2};
 
 void homomorphic_dft_test(Parameter parameter)
 {
@@ -42,7 +43,7 @@ void homomorphic_dft_test(Parameter parameter)
 
 	complex<double>* dvec;
 	complex<double>* dftvec;
-	
+
 	// Homomorphic DFT //
 	timeutils.start("homomorphic DFT_NR");
 	dfthelper.DFT_NR(cipher);
@@ -53,7 +54,7 @@ void homomorphic_dft_test(Parameter parameter)
 	for(long i = 0; i < n; i++) dftvec[i] = mvec[i];
 	FFT(dftvec, n);	
 	bitReverseAndEqual(dftvec, n);
-	
+
 	// Print Result and Difference //
 	dvec = scheme.decrypt(secretKey, cipher);
 	cout << "log2(avg of error) = " << diff(dftvec, dvec, n) << endl;
@@ -94,7 +95,7 @@ void homomorphic_inv_dft_test(Parameter parameter)
 
 	complex<double>* dvec;
 	complex<double>* dftvec;
-	
+
 	// Homomorphic inv DFT //
 	timeutils.start("homomorphic inv DFT_NR");
 	dfthelper.IDFT_RN(cipher);
@@ -111,7 +112,7 @@ void homomorphic_inv_dft_test(Parameter parameter)
 		dftvec[i].real(dftvec[i].real() / (double(n)));
 		dftvec[i].imag(dftvec[i].imag() / (double(n)));
 	}
-	
+
 	// Print Result and Difference //
 	dvec = scheme.decrypt(secretKey, cipher);
 	cout << "log2(avg of error) = " << diff(dftvec, dvec, n) << endl;

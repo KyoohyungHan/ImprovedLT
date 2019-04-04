@@ -22,7 +22,7 @@ RingMultiplier::RingMultiplier(long logN, long logQ) : logN(logN) {
 	long M = N << 1;
 
 	long bound = 2 + logN + 4 * logQ;
-	long nprimes = ceil(bound / 59.0);
+	long nprimes = ceil(bound / 49.0);
 
 	pVec = new uint64_t[nprimes];
 	prVec = new uint64_t[nprimes];
@@ -34,7 +34,7 @@ RingMultiplier::RingMultiplier(long logN, long logQ) : logN(logN) {
 
 	red_ss_array = new _ntl_general_rem_one_struct*[nprimes];
 
-	uint64_t primetest = (1ULL << 59) + 1;
+	uint64_t primetest = (1ULL << 49) + 1;
 	for (long i = 0; i < nprimes; ++i) {
 		while(true) {
 			primetest += M;
